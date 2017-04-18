@@ -219,6 +219,57 @@ defmodule Jabbax.DeserializerTest do
     }
   end
 
+  test "new documents with nested resources" do
+    assert Deserializer.call(
+      %{
+        "data" => %{
+          "type" => "employees",
+          "relationships" => %{
+            "nested-thing" => %{
+              "data" => [
+                %{
+                  "type" => "nested-things",
+                  "relationships" => %{
+                    "deep-nested-thing" => %{
+                      "data" => %{
+                        "type" => "nested-things"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "jsonapi" => %{
+          "version" => "1.0"
+        }
+      }
+    ) == %Document{
+      data: %Resource{
+        type: "employees",
+        id: nil,
+        relationships: %{
+          "nested_thing" => [
+            %Resource{
+              type: "nested_things",
+              id: nil,
+              relationships: %{
+                "deep_nested_thing" => %ResourceId{
+                  type: "nested_things",
+                  id: nil
+                }
+              }
+            }
+          ]
+        }
+      },
+      jsonapi: %{
+        version: "1.0"
+      }
+    }
+  end
+
   test "empty data" do
     assert Deserializer.call(
       %{

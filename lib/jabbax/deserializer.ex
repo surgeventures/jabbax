@@ -30,9 +30,9 @@ defmodule Jabbax.Deserializer do
   end
   defp deserialize_data(data), do: deserialize_data_type(detect_data_type(data), data)
 
-  defp deserialize_data_type(Resource, resource = %{"id" => id, "type" => type}) do
+  defp deserialize_data_type(Resource, resource = %{"type" => type}) do
     %Resource{
-      id: deserialize_id(id),
+      id: deserialize_id(resource["id"]),
       type: deserialize_type(type),
       attributes: dig_and_deserialize_attributes(resource),
       relationships: dig_and_deserialize_relationships(resource),
@@ -40,9 +40,9 @@ defmodule Jabbax.Deserializer do
       meta: dig_and_deserialize_meta(resource)
     }
   end
-  defp deserialize_data_type(ResourceId, %{"id" => id, "type" => type}) do
+  defp deserialize_data_type(ResourceId, resource = %{"type" => type}) do
     %ResourceId{
-      id: deserialize_id(id),
+      id: deserialize_id(resource["id"]),
       type: deserialize_type(type)
     }
   end
@@ -156,6 +156,7 @@ defmodule Jabbax.Deserializer do
   defp deserialize_type(type), do: deserialize_key(type)
 
   defp deserialize_id(id) when is_binary(id), do: id
+  defp deserialize_id(nil), do: nil
 
   defp dig_and_deserialize_key(map, key) do
     case map do
@@ -183,9 +184,9 @@ defmodule Jabbax.Deserializer do
   end
   defp deserialize_value(value), do: value
 
-  defp detect_data_type(%{"id" => _, "type" => _, "attributes" => _}), do: Resource
-  defp detect_data_type(%{"id" => _, "type" => _, "relationships" => _}), do: Resource
-  defp detect_data_type(%{"id" => _, "type" => _, "links" => _}), do: Resource
-  defp detect_data_type(%{"id" => _, "type" => _, "meta" => _}), do: Resource
-  defp detect_data_type(%{"id" => _, "type" => _}), do: ResourceId
+  defp detect_data_type(%{"type" => _, "attributes" => _}), do: Resource
+  defp detect_data_type(%{"type" => _, "relationships" => _}), do: Resource
+  defp detect_data_type(%{"type" => _, "links" => _}), do: Resource
+  defp detect_data_type(%{"type" => _, "meta" => _}), do: Resource
+  defp detect_data_type(%{"type" => _}), do: ResourceId
 end
