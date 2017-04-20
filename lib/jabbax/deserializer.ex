@@ -5,7 +5,7 @@ defmodule Jabbax.Deserializer do
 
   def call(conn = %{body_params: %{}}, _opts) do
     case conn.__struct__.get_req_header(conn, "content-type") do
-      "application/vnd.api+json" -> Map.update!(conn, :body_params, &call/1)
+      ["application/vnd.api+json"] -> Map.update!(conn, :body_params, &call/1)
       _ -> conn
     end
   end
