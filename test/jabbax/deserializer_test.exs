@@ -390,4 +390,27 @@ defmodule Jabbax.DeserializerTest do
       "name" => "Sample User"
     }
   end
+
+  test "no jsonapi key" do
+    assert Deserializer.call(
+      %{
+        "data" => %{
+          "id" => "1",
+          "type" => "user",
+          "attributes" => %{
+            "name" => "Sample User"
+          }
+        }
+      }
+    ) == %Document{
+      data: %Resource{
+        id: "1",
+        type: "user",
+        attributes: %{
+          "name" => "Sample User"
+        }
+      },
+      jsonapi: %{version: "1.0"}
+    }
+  end
 end
