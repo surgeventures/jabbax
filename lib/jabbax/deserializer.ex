@@ -152,6 +152,7 @@ defmodule Jabbax.Deserializer do
       version: "1.0"
     }
   end
+  defp dig_and_deserialize_version(_), do: %{version: "1.0"}
 
   defp deserialize_type(type), do: deserialize_key(type)
 
