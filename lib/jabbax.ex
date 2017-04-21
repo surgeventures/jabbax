@@ -16,6 +16,6 @@ defmodule Jabbax do
   def encode_to_iodata!(input) do
     input
     |> Serializer.call
-    |> Poison.encode_to_iodata!
+    |> Application.get_env(:jabbax, :json_encoder).encode_to_iodata!
   end
 end
