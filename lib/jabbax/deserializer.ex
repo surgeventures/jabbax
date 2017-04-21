@@ -1,15 +1,6 @@
 defmodule Jabbax.Deserializer do
   use Jabbax.Document
 
-  def init(_opts), do: nil
-
-  def call(conn = %{body_params: %{}}, _opts) do
-    case conn.__struct__.get_req_header(conn, "content-type") do
-      ["application/vnd.api+json"] -> Map.update!(conn, :body_params, &call/1)
-      _ -> conn
-    end
-  end
-
   def call(doc = %{}) do
     %Document{
       data: dig_and_deserialize_data(doc),
