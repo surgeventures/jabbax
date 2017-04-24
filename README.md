@@ -147,19 +147,21 @@ end
 If your project consumes JSON API documents besides generating them, you can pass the document body
 string to `Jabbax.decode!` to get the `Jabbax.Document` structure, decontaminated & ready to roll.
 
-Once again, you can simplify this if you're using Plug. In that case, you can plug
-`Jabbax.Deserializer` into your pipeline like this:
+Once again, you can simplify this if you're using Plug. In that case, you can add
+`Jabbax.Parser` to your parsers list like this:
 
 ```elixir
-pipeline :api do
-  plug :accepts, ["json-api"]
-  plug Jabbax.Deserializer
-end
+plug Plug.Parsers,
+  parsers: [:urlencoded, :multipart, Jabbax.Parser]
 ```
 
-If the request has a proper content type (`application/vnd.api+json`), this plug will patch the
-`conn.body_params` filled by `Plug.Parsers` to include the `Jabbax.Document` structure instead of
-plain JSON. You can then access it in your Phoenix controller like below:
+> In example above, Jabbax parser has replaced the default `:json` one in order not to support both
+plain JSON and `Jabbax.Document` structs in `conn.body_params` futher down the pipeline. You can
+still use both parsers, but then you must place `Jabbax.Parser` **before** the `:json` parser, as
+the latter is written to catch the `application/vnd.api+json` type.
+
+If the request has a proper content type (`application/vnd.api+json`), the `conn.body_params` will
+hold the `Jabbax.Document` structure. You can then access it in your Phoenix controller like below:
 
 ```elixir
 defmodule MyProject.Web.UserController do

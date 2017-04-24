@@ -286,6 +286,19 @@ defmodule Jabbax.DeserializerTest do
     }
   end
 
+  test "no jsonapi key" do
+    assert Deserializer.call(
+      %{
+        "data" => nil
+      }
+    ) == %Document{
+      data: nil,
+      jsonapi: %{
+        version: "1.0"
+      }
+    }
+  end
+
   test "errors" do
     assert Deserializer.call(
       %{
@@ -327,90 +340,6 @@ defmodule Jabbax.DeserializerTest do
       jsonapi: %{
         version: "1.0"
       }
-    }
-  end
-
-  defmodule JsonApiConn do
-    defstruct body_params: %{}
-
-    def get_req_header(_conn, "content-type") do
-      ["application/vnd.api+json"]
-    end
-  end
-
-  test "JSON API plug behavior" do
-    conn = Deserializer.call(
-      %JsonApiConn{
-        body_params: %{
-          "data" => %{
-            "id" => "1",
-            "type" => "user",
-            "attributes" => %{
-              "name" => "Sample User"
-            }
-          },
-          "jsonapi" => %{
-            "version" => "1.0"
-          }
-        }
-      },
-      %{}
-    )
-
-    assert conn.body_params == %Document{
-      data: %Resource{
-        id: "1",
-        type: "user",
-        attributes: %{
-          "name" => "Sample User"
-        }
-      }
-    }
-  end
-
-  defmodule OtherConn do
-    defstruct body_params: %{}
-
-    def get_req_header(_conn, "content-type") do
-      ["application/json"]
-    end
-  end
-
-  test "non-JSON API plug behavior" do
-    conn = Deserializer.call(
-      %OtherConn{
-        body_params: %{
-          "name" => "Sample User"
-        }
-      },
-      %{}
-    )
-
-    assert conn.body_params == %{
-      "name" => "Sample User"
-    }
-  end
-
-  test "no jsonapi key" do
-    assert Deserializer.call(
-      %{
-        "data" => %{
-          "id" => "1",
-          "type" => "user",
-          "attributes" => %{
-            "name" => "Sample User"
-          }
-        }
-      }
-    ) == %Document{
-      data: %Resource{
-        id: "1",
-        type: "user",
-        attributes: %{
-          "name" => "Sample User"
-        }
-      },
-      jsonapi: %{version: "1.0"}
     }
   end
 end
