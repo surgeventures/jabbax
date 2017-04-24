@@ -30,7 +30,8 @@ defmodule Jabbax.ParserTest do
         attributes: %{
           "name" => "Sample User"
         }
-      }
+      },
+      jsonapi: %{version: "1.0"}
     }
   end
 
@@ -50,33 +51,5 @@ defmodule Jabbax.ParserTest do
     |> parse([Jabbax.Parser])
 
     assert connection.body_params == %{}
-  end
-
-  test "no jsonapi key" do
-    connection = conn(:post, "/", Poison.encode!(%{
-      "data" => %{
-        "id" => "1",
-        "type" => "user",
-        "attributes" => %{
-          "name" => "Sample User"
-        }
-      },
-      "jsonapi" => %{
-        "version" => "1.0"
-      }
-    }))
-    |> put_req_header("content-type", "application/vnd.api+json")
-    |> parse([Jabbax.Parser])
-
-    assert connection.body_params == %Document{
-      data: %Resource{
-        id: "1",
-        type: "user",
-        attributes: %{
-          "name" => "Sample User"
-        }
-      },
-      jsonapi: %{version: "1.0"}
-    }
   end
 end

@@ -286,6 +286,19 @@ defmodule Jabbax.DeserializerTest do
     }
   end
 
+  test "no jsonapi key" do
+    assert Deserializer.call(
+      %{
+        "data" => nil
+      }
+    ) == %Document{
+      data: nil,
+      jsonapi: %{
+        version: "1.0"
+      }
+    }
+  end
+
   test "errors" do
     assert Deserializer.call(
       %{
