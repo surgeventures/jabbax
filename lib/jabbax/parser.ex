@@ -14,6 +14,7 @@ if Code.ensure_loaded?(Plug) do
     defp decode({:more, _, conn}), do: {:error, :too_large, conn}
     defp decode({:error, :timeout}), do: raise Plug.TimeoutError
     defp decode({:error, _}), do: raise Plug.BadRequestError
+    defp decode({:ok, "", conn}), do: {:ok, %Jabbax.Document{}, conn}
     defp decode({:ok, body, conn}) do
       {:ok, Jabbax.decode!(body), conn}
     rescue

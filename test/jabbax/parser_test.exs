@@ -52,4 +52,17 @@ defmodule Jabbax.ParserTest do
 
     assert connection.body_params == %{}
   end
+
+  test "empty request body" do
+    connection = conn(:post, "/", "")
+    |> put_req_header("content-type", "application/vnd.api+json")
+    |> parse([Jabbax.Parser])
+
+    assert connection.body_params == %Document{
+      data: nil,
+      jsonapi: %{
+        version: "1.0"
+      }
+    }
+  end
 end
