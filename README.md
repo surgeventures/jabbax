@@ -147,35 +147,47 @@ end
 If your project consumes JSON API documents besides generating them, you can pass the document body
 string to `Jabbax.decode!` to get the `Jabbax.Document` structure, decontaminated & ready to roll.
 
-Once again, you can simplify this if you're using Plug. In that case, you can add
-`Jabbax.Parser` to your parsers list like this:
+Once again, you can simplify this if you're using Plug. Jabbax offers two modules for such
+occasion: `Jabbax.Parser` and `Jabbax.Plug`.
+
+#### Parser
+
+Default JSON parser in Plug decodes everything that ends with `json` in content type, including
+JSON API's content type. This means it doesn't differentiate between plain JSON and JSON API
+requests, which is only fine if you want to support both in your app. If, however, you want to only
+take JSON API input and throw plain JSON away as bad requests, you'll need something more. That's
+where the `Jabbax.Parser` comes in.
+
+In order to reject plain JSON, ensure that you don't have `application/json` passed in `:pass` to
+`Plug.Parsers` and replace the stock `:json` parser with `Jabbax.Parser` like this:
 
 ```elixir
 plug Plug.Parsers,
   parsers: [:urlencoded, :multipart, Jabbax.Parser]
 ```
 
-> In example above, Jabbax parser has replaced the default `:json` one in order not to support both
-plain JSON and `Jabbax.Document` structs in `conn.body_params` futher down the pipeline. You can
-still use both parsers, but then you must place `Jabbax.Parser` **before** the `:json` parser, as
-the latter is written to catch the `application/vnd.api+json` type.
+#### Plug
 
-If the request has a proper content type (`application/vnd.api+json`), the `conn.body_params` will
-hold the `Jabbax.Document` structure. You can then access it in your Phoenix controller like below:
+Because Plug flow relies upon an assertion that the `conn.body_params` stucture resulting from
+`Plug.Parsers` is a map, Jabbax parser can't deserialize the actual JSON body into
+`Jabbax.Document`. That's what `Jabbax.Plug` is for.
+
+If the request has a proper content type (`application/vnd.api+json`), the `conn.body_params`
+(previously parsed by either built-in `:json` parser or `Jabbax.Parser`) will be deserialized into
+the `Jabbax.Document` structure and assigned to `conn.assigns[:doc]` (or other name passed via the
+`:assign` option. You may want to add the plug like this:
 
 ```elixir
-defmodule MyProject.Web.UserController do
-  use MyProject.Web, :controller
-  alias MyProject.Accounts
+pipeline :api do
+  plug Jabbax.Plug
+end
+```
 
-  def create(conn = %{body_params: doc}, _) do
-    with {:ok, %User{} = user} <- Accounts.create_user(doc.data.attributes) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", user_path(conn, :show, user))
-      |> render(user: user)
-    end
-  end
+Or with different assign name:
+
+```elixir
+pipeline :api do
+  plug Jabbax.Plug, assign: :json_api_document
 end
 ```
 
