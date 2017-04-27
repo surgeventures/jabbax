@@ -28,7 +28,7 @@ defmodule Jabbax.PlugTest do
       |> conn("/", Poison.encode!(json))
       |> put_req_header("content-type", "application/vnd.api+json")
       |> parse([Jabbax.Parser])
-      |> Jabbax.Plug.call(Jabbax.Plug.init())
+      |> Jabbax.Plug.call(Jabbax.Plug.init(nil))
 
     assert connection.assigns[:doc] == %Document{
       data: %Resource{
@@ -68,7 +68,7 @@ defmodule Jabbax.PlugTest do
       |> conn("/", Poison.encode!(json))
       |> put_req_header("content-type", "application/json")
       |> parse([:json, Jabbax.Parser])
-      |> Jabbax.Plug.call(Jabbax.Plug.init())
+      |> Jabbax.Plug.call(Jabbax.Plug.init(nil))
 
     assert connection.assigns[:custom_doc] == nil
   end

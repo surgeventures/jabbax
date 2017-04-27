@@ -1,8 +1,8 @@
 if Code.ensure_loaded?(Plug) do
   defmodule Jabbax.Plug do
-    def init(opts \\ []) do
+    def init(opts) do
       [
-        assign: Keyword.get(opts, :assign, :doc)
+        assign: Keyword.get(opts || [], :assign, :doc)
       ]
     end
 
