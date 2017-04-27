@@ -7,8 +7,8 @@ defmodule Jabbax.ParserTest do
     Plug.Parsers.call(conn, Plug.Parsers.init(parsers: parsers, json_decoder: Poison))
   end
 
-  test "JSON API document" do
-    json = %{
+  setup do
+    {:ok, json: %{
       "data" => %{
         "id" => "1",
         "type" => "user",
@@ -19,8 +19,10 @@ defmodule Jabbax.ParserTest do
       "jsonapi" => %{
         "version" => "1.0"
       }
-    }
+    }}
+  end
 
+  test "JSON API document", %{json: json} do
     connection =
       :post
       |> conn("/", Poison.encode!(json))
@@ -30,20 +32,7 @@ defmodule Jabbax.ParserTest do
     assert connection.body_params == json
   end
 
-  test "plain JSON content type without JSON parser" do
-    json = %{
-      "data" => %{
-        "id" => "1",
-        "type" => "user",
-        "attributes" => %{
-          "name" => "Sample User"
-        }
-      },
-      "jsonapi" => %{
-        "version" => "1.0"
-      }
-    }
-
+  test "plain JSON content type without JSON parser", %{json: json} do
     connection =
       :post
       |> conn("/", Poison.encode!(json))
@@ -54,20 +43,7 @@ defmodule Jabbax.ParserTest do
     end)
   end
 
-  test "no content type" do
-    json = %{
-      "data" => %{
-        "id" => "1",
-        "type" => "user",
-        "attributes" => %{
-          "name" => "Sample User"
-        }
-      },
-      "jsonapi" => %{
-        "version" => "1.0"
-      }
-    }
-
+  test "no content type", %{json: json} do
     connection =
       :post
       |> conn("/", Poison.encode!(json))
