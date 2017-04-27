@@ -4,11 +4,11 @@ defmodule Jabbax.ParserTest do
   use Jabbax.Document
 
   def parse(conn, parsers) do
-    Plug.Parsers.call(conn, Plug.Parsers.init(parsers: parsers))
+    Plug.Parsers.call(conn, Plug.Parsers.init(parsers: parsers, json_decoder: Poison))
   end
 
   test "JSON API document" do
-    connection = conn(:post, "/", Poison.encode!(%{
+    json = %{
       "data" => %{
         "id" => "1",
         "type" => "user",
@@ -19,24 +19,19 @@ defmodule Jabbax.ParserTest do
       "jsonapi" => %{
         "version" => "1.0"
       }
-    }))
-    |> put_req_header("content-type", "application/vnd.api+json")
-    |> parse([Jabbax.Parser])
-
-    assert connection.body_params == %Document{
-      data: %Resource{
-        id: "1",
-        type: "user",
-        attributes: %{
-          "name" => "Sample User"
-        }
-      },
-      jsonapi: %{version: "1.0"}
     }
+
+    connection =
+      :post
+      |> conn("/", Poison.encode!(json))
+      |> put_req_header("content-type", "application/vnd.api+json")
+      |> parse([Jabbax.Parser])
+
+    assert connection.body_params == json
   end
 
-  test "misc content type" do
-    connection = conn(:post, "/", Poison.encode!(%{
+  test "plain JSON content type without JSON parser" do
+    json = %{
       "data" => %{
         "id" => "1",
         "type" => "user",
@@ -47,22 +42,47 @@ defmodule Jabbax.ParserTest do
       "jsonapi" => %{
         "version" => "1.0"
       }
-    }))
-    |> parse([Jabbax.Parser])
+    }
+
+    connection =
+      :post
+      |> conn("/", Poison.encode!(json))
+      |> put_req_header("content-type", "application/json")
+
+    assert_raise(Plug.Parsers.UnsupportedMediaTypeError, fn ->
+      parse(connection, [Jabbax.Parser])
+    end)
+  end
+
+  test "no content type" do
+    json = %{
+      "data" => %{
+        "id" => "1",
+        "type" => "user",
+        "attributes" => %{
+          "name" => "Sample User"
+        }
+      },
+      "jsonapi" => %{
+        "version" => "1.0"
+      }
+    }
+
+    connection =
+      :post
+      |> conn("/", Poison.encode!(json))
+      |> parse([Jabbax.Parser])
 
     assert connection.body_params == %{}
   end
 
   test "empty request body" do
-    connection = conn(:post, "/", "")
-    |> put_req_header("content-type", "application/vnd.api+json")
-    |> parse([Jabbax.Parser])
+    connection =
+      :post
+      |> conn("/", "")
+      |> put_req_header("content-type", "application/vnd.api+json")
+      |> parse([Jabbax.Parser])
 
-    assert connection.body_params == %Document{
-      data: nil,
-      jsonapi: %{
-        version: "1.0"
-      }
-    }
+    assert connection.body_params == %{}
   end
 end
