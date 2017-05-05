@@ -83,6 +83,7 @@ defmodule Jabbax.Serializer do
     |> dig_and_serialize_meta
     |> dig_and_serialize_links
     |> struct_to_map_with_present_keys
+    |> put_empty_data
   end
   defp serialize_relationship(data) when is_list(data) or is_map(data) do
     %{
