@@ -219,6 +219,36 @@ defmodule Jabbax.SerializerTest do
         version: "1.0"
       }
     }
+
+    assert Serializer.call(
+      %Document{
+        data: %Resource{
+          id: "1",
+          type: "employees",
+          relationships: %{
+            business: %Relationship{
+              data: nil
+            }
+          }
+        },
+        jsonapi: %{
+          version: "1.0"
+        }
+      }
+    ) == %{
+      data: %{
+        id: "1",
+        type: "employees",
+        relationships: %{
+          "business" => %{
+            data: nil
+          }
+        }
+      },
+      jsonapi: %{
+        version: "1.0"
+      }
+    }
   end
 
   test "errors" do
