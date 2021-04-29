@@ -9,6 +9,7 @@ defmodule Jabbax.Document do
   defmacro __using__(_) do
     quote do
       alias Jabbax.Document
+
       alias Jabbax.Document.{
         ResourceId,
         Resource,
