@@ -1,5 +1,6 @@
 if Code.ensure_loaded?(Plug) do
   defmodule Jabbax.Parser do
+    @moduledoc false
     @behaviour Plug.Parsers
 
     def parse(conn, "application", "vnd.api+json", _headers, opts) do
@@ -26,6 +27,7 @@ if Code.ensure_loaded?(Plug) do
           raise(Jabbax.StructureError, context: "document", expected: "Map", actual: terms)
       end
     rescue
+      # credo:disable-for-next-line Credo.Check.Warning.RaiseInsideRescue
       e -> raise Plug.Parsers.ParseError, exception: e
     end
   end

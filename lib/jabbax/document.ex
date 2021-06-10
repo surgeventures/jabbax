@@ -1,4 +1,6 @@
 defmodule Jabbax.Document do
+  @moduledoc false
+
   defstruct data: nil,
             errors: [],
             included: [],
@@ -9,13 +11,14 @@ defmodule Jabbax.Document do
   defmacro __using__(_) do
     quote do
       alias Jabbax.Document
+
       alias Jabbax.Document.{
-        ResourceId,
-        Resource,
+        Error,
+        ErrorSource,
         Link,
         Relationship,
-        Error,
-        ErrorSource
+        Resource,
+        ResourceId
       }
     end
   end

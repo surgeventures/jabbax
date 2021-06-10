@@ -12,4 +12,3 @@ defmodule Jabbax.Document.ResourceIdTest do
     }
   end
 end
-

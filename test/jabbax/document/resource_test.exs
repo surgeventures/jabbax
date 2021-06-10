@@ -16,4 +16,3 @@ defmodule Jabbax.Document.ResourceTest do
     }
   end
 end
-

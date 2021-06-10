@@ -1,4 +1,5 @@
 defmodule Jabbax.Deserializer do
+  @moduledoc false
   use Jabbax.Document
 
   def call(doc = %{}) do

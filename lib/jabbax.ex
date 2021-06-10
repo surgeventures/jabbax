@@ -1,5 +1,7 @@
 defmodule Jabbax do
-  alias Jabbax.{Serializer, Deserializer}
+  @moduledoc false
+
+  alias Jabbax.{Deserializer, Serializer}
 
   def decode!(input) do
     input

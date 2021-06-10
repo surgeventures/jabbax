@@ -7,4 +7,3 @@ defmodule Jabbax.Document.ErrorSourceTest do
       %ErrorSource{pointer: "/data/attributes/first_name"}
   end
 end
-

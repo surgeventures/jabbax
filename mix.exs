@@ -17,7 +17,10 @@ defmodule Jabbax.Mixfile do
   end
 
   defp deps do
-    [{:plug, "~> 1.3.2 or ~> 1.4", optional: true},
-     {:poison, "~> 3.0", optional: true}]
+    [
+      {:plug, "~> 1.3.2 or ~> 1.4", optional: true},
+      {:poison, "~> 3.0", optional: true},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
+    ]
   end
 end

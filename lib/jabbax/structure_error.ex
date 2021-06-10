@@ -1,4 +1,6 @@
 defmodule Jabbax.StructureError do
+  @moduledoc false
+
   defexception [:context, :expected, :actual]
 
   def message(error) do

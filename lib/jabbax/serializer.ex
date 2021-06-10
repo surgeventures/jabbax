@@ -1,4 +1,6 @@
 defmodule Jabbax.Serializer do
+  @moduledoc false
+
   use Jabbax.Document
   alias Jabbax.StructureError
 
