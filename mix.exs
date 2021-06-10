@@ -8,7 +8,22 @@ defmodule Jabbax.Mixfile do
       elixir: "~> 1.4",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      description: "JSON API Building Blocks Assembly for Elixir",
+      source_url: "https://github.com/surgeventures/jabbax",
+      homepage_url: "https://github.com/surgeventures/jabbax",
+      package: package()
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => "https://github.com/surgeventures/jabbax",
+        "Fresha" => "https://www.fresha.com"
+      },
+      files: ~w(mix.exs lib LICENSE README.md)
     ]
   end
 
