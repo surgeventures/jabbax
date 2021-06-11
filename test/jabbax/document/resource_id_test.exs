@@ -4,12 +4,11 @@ defmodule Jabbax.Document.ResourceIdTest do
 
   test "#from_map" do
     assert ResourceId.from_map(%{
-      id: 1,
-      type: "user"
-    }) == %ResourceId{
-      id: 1,
-      type: "user"
-    }
+             id: 1,
+             type: "user"
+           }) == %ResourceId{
+             id: 1,
+             type: "user"
+           }
   end
 end
-
