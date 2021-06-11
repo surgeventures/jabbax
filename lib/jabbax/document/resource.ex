@@ -1,4 +1,6 @@
 defmodule Jabbax.Document.Resource do
+  @moduledoc false
+
   defstruct id: nil,
             type: nil,
             attributes: %{},

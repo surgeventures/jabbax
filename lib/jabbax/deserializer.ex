@@ -1,4 +1,5 @@
 defmodule Jabbax.Deserializer do
+  @moduledoc false
   use Jabbax.Document
 
   def call(doc = %{}) do
@@ -16,9 +17,11 @@ defmodule Jabbax.Deserializer do
   defp dig_and_deserialize_data(_), do: nil
 
   defp deserialize_data(nil), do: nil
+
   defp deserialize_data(data_list) when is_list(data_list) do
     Enum.map(data_list, &deserialize_data/1)
   end
+
   defp deserialize_data(data), do: deserialize_data_type(detect_data_type(data), data)
 
   defp deserialize_data_type(Resource, resource = %{"type" => type}) do
@@ -31,6 +34,7 @@ defmodule Jabbax.Deserializer do
       meta: dig_and_deserialize_meta(resource)
     }
   end
+
   defp deserialize_data_type(ResourceId, resource = %{"type" => type}) do
     %ResourceId{
       id: deserialize_id(resource["id"]),
@@ -44,6 +48,7 @@ defmodule Jabbax.Deserializer do
   defp dig_and_deserialize_relationships(%{"relationships" => relationships}) do
     deserialize_relationships(relationships)
   end
+
   defp dig_and_deserialize_relationships(_), do: %{}
 
   defp deserialize_relationships(relationship_map) do
@@ -57,12 +62,15 @@ defmodule Jabbax.Deserializer do
   end
 
   defp deserialize_relationship(data_list) when is_list(data_list), do: deserialize_data(data_list)
+
   defp deserialize_relationship(relationship = %{"meta" => _}) do
     deserialize_relationship_struct(relationship)
   end
+
   defp deserialize_relationship(relationship = %{"links" => _}) do
     deserialize_relationship_struct(relationship)
   end
+
   defp deserialize_relationship(%{"data" => data}), do: deserialize_data(data)
 
   defp deserialize_relationship_struct(relationship = %{}) do
@@ -76,6 +84,7 @@ defmodule Jabbax.Deserializer do
   defp dig_and_deserialize_links(%{"links" => links}) do
     deserialize_links(links)
   end
+
   defp dig_and_deserialize_links(_), do: %{}
 
   defp deserialize_links(link_map) do
@@ -89,6 +98,7 @@ defmodule Jabbax.Deserializer do
   end
 
   defp deserialize_link(href) when is_binary(href), do: href
+
   defp deserialize_link(link = %{"href" => href}) do
     %Link{
       href: href,
@@ -99,6 +109,7 @@ defmodule Jabbax.Deserializer do
   defp dig_and_deserialize_errors(%{"errors" => errors}) do
     deserialize_errors(errors)
   end
+
   defp dig_and_deserialize_errors(_), do: []
 
   defp deserialize_errors(error_list) when is_list(error_list) do
@@ -124,18 +135,20 @@ defmodule Jabbax.Deserializer do
   defp deserialize_error_source(source = %{}) do
     %ErrorSource{
       pointer: dig_and_deserialize_key(source, "pointer"),
-      parameter: dig_and_deserialize_key(source, "parameter"),
+      parameter: dig_and_deserialize_key(source, "parameter")
     }
   end
 
   defp dig_and_deserialize_attributes(%{"attributes" => attributes}) do
     deserialize_key_values(attributes)
   end
+
   defp dig_and_deserialize_attributes(_), do: %{}
 
   defp dig_and_deserialize_meta(%{"meta" => meta}) do
     deserialize_key_values(meta)
   end
+
   defp dig_and_deserialize_meta(_), do: %{}
 
   defp dig_and_deserialize_version(%{"jsonapi" => %{"version" => "1.0"}}) do
@@ -143,6 +156,7 @@ defmodule Jabbax.Deserializer do
       version: "1.0"
     }
   end
+
   defp dig_and_deserialize_version(_), do: %{version: "1.0"}
 
   defp deserialize_type(type), do: deserialize_key(type)
@@ -160,6 +174,7 @@ defmodule Jabbax.Deserializer do
   defp deserialize_key(key) when is_binary(key), do: String.replace(key, "-", "_")
 
   defp deserialize_key_values(nil), do: %{}
+
   defp deserialize_key_values(key_values_map = %{}) do
     key_values_map
     |> Enum.map(&deserialize_key_value_pair/1)
@@ -171,9 +186,11 @@ defmodule Jabbax.Deserializer do
   end
 
   defp deserialize_value(key_values_map = %{}), do: deserialize_key_values(key_values_map)
+
   defp deserialize_value(value_list) when is_list(value_list) do
     Enum.map(value_list, &deserialize_value/1)
   end
+
   defp deserialize_value(value), do: value
 
   defp detect_data_type(%{"type" => _, "attributes" => _}), do: Resource

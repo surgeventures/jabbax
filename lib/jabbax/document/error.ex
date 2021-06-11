@@ -1,4 +1,6 @@
 defmodule Jabbax.Document.Error do
+  @moduledoc false
+
   defstruct id: nil,
             code: nil,
             status: nil,

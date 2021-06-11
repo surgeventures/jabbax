@@ -1,4 +1,6 @@
 defmodule Jabbax.Document.ErrorSource do
+  @moduledoc false
+
   defstruct [:pointer, :parameter]
 
   def from_attribute(attribute, prefix \\ []) do

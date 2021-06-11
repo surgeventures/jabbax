@@ -1,5 +1,5 @@
 defmodule Jabbax.StructureError do
-  @behaviour Exception
+  @moduledoc false
 
   defexception [:context, :expected, :actual]
 

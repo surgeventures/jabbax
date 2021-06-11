@@ -1,5 +1,7 @@
 if Code.ensure_loaded?(Plug) do
   defmodule Jabbax.Plug do
+    @moduledoc false
+
     def init(opts) do
       [
         assign: Keyword.get(opts || [], :assign, :doc)
