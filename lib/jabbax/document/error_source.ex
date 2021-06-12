@@ -3,12 +3,8 @@ defmodule Jabbax.Document.ErrorSource do
 
   defstruct [:pointer, :parameter]
 
-  def from_attribute(attributes) when is_list(attributes) do
-    attributes_part =
-      attributes
-      |> Enum.join("/")
-
-    pointer = "/data/attributes/#{attributes_part}"
+  def from_attribute(attribute_path) when is_list(attribute_path) do
+    pointer = "/data/attributes/" <> Enum.join(attribute_path, "/")
     %__MODULE__{pointer: pointer}
   end
 
