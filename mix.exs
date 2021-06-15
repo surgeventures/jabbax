@@ -4,7 +4,7 @@ defmodule Jabbax.Mixfile do
   def project do
     [
       app: :jabbax,
-      version: "0.1.0",
+      version: "0.2.0",
       elixir: "~> 1.4",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -33,9 +33,10 @@ defmodule Jabbax.Mixfile do
 
   defp deps do
     [
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:plug, "~> 1.3.2 or ~> 1.4", optional: true},
-      {:poison, "~> 3.0", optional: true},
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
+      {:poison, "~> 3.0", optional: true}
     ]
   end
 end
