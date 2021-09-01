@@ -16,6 +16,9 @@ if Code.ensure_loaded?(Plug) do
         _ ->
           conn
       end
+    rescue
+      # credo:disable-for-next-line Credo.Check.Warning.RaiseInsideRescue
+      e in Jabbax.StructureError -> raise Plug.Parsers.ParseError, exception: e
     end
   end
 end

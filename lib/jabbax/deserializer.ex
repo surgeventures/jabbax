@@ -1,6 +1,7 @@
 defmodule Jabbax.Deserializer do
   @moduledoc false
   use Jabbax.Document
+  alias Jabbax.StructureError
 
   def call(doc = %{}) do
     %Document{
@@ -51,17 +52,27 @@ defmodule Jabbax.Deserializer do
 
   defp dig_and_deserialize_relationships(_), do: %{}
 
-  defp deserialize_relationships(relationship_map) do
+  defp deserialize_relationships(relationship_map)
+       when is_map(relationship_map) or is_list(relationship_map) do
     relationship_map
     |> Enum.map(&deserialize_relationship_pair/1)
     |> Enum.into(%{})
   end
 
+  defp deserialize_relationships(relationship),
+    do: raise(StructureError, context: "relationships", expected: "Map", actual: relationship)
+
   defp deserialize_relationship_pair({name, relationship = %{}}) do
     {deserialize_key(name), deserialize_relationship(relationship)}
   end
 
-  defp deserialize_relationship(data_list) when is_list(data_list), do: deserialize_data(data_list)
+  defp deserialize_relationship_pair(relationship),
+    do:
+      raise(StructureError,
+        context: "relationship",
+        expected: "{name, relationship}",
+        actual: relationship
+      )
 
   defp deserialize_relationship(relationship = %{"meta" => _}) do
     deserialize_relationship_struct(relationship)
@@ -72,6 +83,14 @@ defmodule Jabbax.Deserializer do
   end
 
   defp deserialize_relationship(%{"data" => data}), do: deserialize_data(data)
+
+  defp deserialize_relationship(data),
+    do:
+      raise(StructureError,
+        context: "relationship object",
+        expected: "meta, links or data",
+        actual: data
+      )
 
   defp deserialize_relationship_struct(relationship = %{}) do
     %Relationship{

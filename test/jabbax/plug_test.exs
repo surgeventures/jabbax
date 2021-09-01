@@ -63,4 +63,31 @@ defmodule Jabbax.PlugTest do
 
     assert connection.assigns[:custom_doc] == nil
   end
+
+  test "malformed body" do
+    malformed_body = %{
+      "data" => %{
+        "type" => "employees",
+        "relationships" => %{
+          "service" => %{
+            "dataaa" => %{
+              "type" => "services",
+              "id" => "21"
+            }
+          }
+        }
+      },
+      "jsonapi" => %{
+        "version" => "1.0"
+      }
+    }
+
+    assert_raise(Plug.Parsers.ParseError, fn ->
+      :post
+      |> conn("/", Poison.encode!(malformed_body))
+      |> put_req_header("content-type", "application/vnd.api+json")
+      |> parse([Jabbax.Parser])
+      |> Jabbax.Plug.call(Jabbax.Plug.init(nil))
+    end)
+  end
 end

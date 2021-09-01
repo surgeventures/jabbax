@@ -2,6 +2,7 @@ defmodule Jabbax.DeserializerTest do
   use ExUnit.Case
   use Jabbax.Document
   alias Jabbax.Deserializer
+  alias Jabbax.StructureError
 
   test "one resource, attributes, relationships, meta, links and includes" do
     assert Deserializer.call(%{
@@ -260,6 +261,57 @@ defmodule Jabbax.DeserializerTest do
                version: "1.0"
              }
            }
+  end
+
+  test "new documents with invalid nil relationships" do
+    assert_raise(StructureError, fn ->
+      Deserializer.call(%{
+        "data" => %{
+          "type" => "employees",
+          "relationships" => nil
+        },
+        "jsonapi" => %{
+          "version" => "1.0"
+        }
+      })
+    end)
+  end
+
+  test "new documents with invalid relationship object dataaa" do
+    assert_raise(StructureError, fn ->
+      Deserializer.call(%{
+        "data" => %{
+          "type" => "employees",
+          "relationships" => %{
+            "service" => %{
+              "dataaa" => %{
+                "type" => "services",
+                "id" => "21"
+              }
+            }
+          }
+        },
+        "jsonapi" => %{
+          "version" => "1.0"
+        }
+      })
+    end)
+  end
+
+  test "new documents with invalid relationship list" do
+    assert_raise(StructureError, fn ->
+      Deserializer.call(%{
+        "data" => %{
+          "type" => "employees",
+          "relationships" => [
+            ""
+          ]
+        },
+        "jsonapi" => %{
+          "version" => "1.0"
+        }
+      })
+    end)
   end
 
   test "empty data" do
