@@ -16,8 +16,13 @@ defmodule Jabbax.ParserTest do
     }
   }
 
-  def parse(conn, parsers) do
-    Plug.Parsers.call(conn, Plug.Parsers.init(parsers: parsers, json_decoder: Poison))
+  def parse(conn, opts \\ []) do
+    opts =
+      opts
+      |> Keyword.put_new(:parsers, [Jabbax.Parser])
+      |> Keyword.put_new(:json_decoder, Poison)
+
+    Plug.Parsers.call(conn, Plug.Parsers.init(opts))
   end
 
   test "JSON API document" do
@@ -25,7 +30,7 @@ defmodule Jabbax.ParserTest do
       :post
       |> conn("/", Poison.encode!(@sample_json))
       |> put_req_header("content-type", "application/vnd.api+json")
-      |> parse([Jabbax.Parser])
+      |> parse()
 
     assert connection.body_params == @sample_json
   end
@@ -37,7 +42,7 @@ defmodule Jabbax.ParserTest do
       |> put_req_header("content-type", "application/json")
 
     assert_raise(Plug.Parsers.UnsupportedMediaTypeError, fn ->
-      parse(connection, [Jabbax.Parser])
+      parse(connection)
     end)
   end
 
@@ -45,7 +50,7 @@ defmodule Jabbax.ParserTest do
     connection =
       :post
       |> conn("/", Poison.encode!(@sample_json))
-      |> parse([Jabbax.Parser])
+      |> parse()
 
     assert connection.body_params == %{}
   end
@@ -55,8 +60,34 @@ defmodule Jabbax.ParserTest do
       :post
       |> conn("/", "")
       |> put_req_header("content-type", "application/vnd.api+json")
-      |> parse([Jabbax.Parser])
+      |> parse()
 
     assert connection.body_params == %{}
+  end
+
+  defmodule BodyReader do
+    def read_body(conn, opts) do
+      {:ok, body, conn} = Plug.Conn.read_body(conn, opts)
+      {:ok, String.replace(body, "Sample", "Custom"), conn}
+    end
+  end
+
+  test "custom body_reader" do
+    connection =
+      :post
+      |> conn("/", Poison.encode!(@sample_json))
+      |> put_req_header("content-type", "application/vnd.api+json")
+      |> parse(body_reader: {BodyReader, :read_body, []})
+
+    assert connection.body_params == %{
+             "data" => %{
+               "attributes" => %{
+                 "name" => "Custom User"
+               },
+               "id" => "1",
+               "type" => "user"
+             },
+             "jsonapi" => %{"version" => "1.0"}
+           }
   end
 end

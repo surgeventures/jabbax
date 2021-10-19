@@ -35,7 +35,7 @@ defmodule Jabbax.Mixfile do
     [
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:plug, "~> 1.3.2 or ~> 1.4", optional: true},
+      {:plug, "~> 1.12", optional: true},
       {:poison, "~> 3.0", optional: true}
     ]
   end
