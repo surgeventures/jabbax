@@ -3,14 +3,21 @@ if Code.ensure_loaded?(Plug) do
     @moduledoc false
     @behaviour Plug.Parsers
 
-    def parse(conn, "application", "vnd.api+json", _headers, opts) do
-      decoder =
-        Keyword.get(opts, :json_decoder) ||
-          raise(ArgumentError, "Jabbax parser expects a :json_decoder option")
+    @impl true
+    def init(opts) do
+      {decoder, opts} = Keyword.pop(opts, :json_decoder)
+      {body_reader, opts} = Keyword.pop(opts, :body_reader, {Plug.Conn, :read_body, []})
+      decoder = validate_decoder!(decoder)
+      {body_reader, decoder, opts}
+    end
 
-      conn
-      |> Plug.Conn.read_body(opts)
-      |> decode(decoder)
+    defp validate_decoder!(decoder) do
+      decoder || raise(ArgumentError, "Jabbax parser expects a :json_decoder option")
+    end
+
+    @impl true
+    def parse(conn, "application", "vnd.api+json", _headers, {{mod, fun, args}, decoder, opts}) do
+      apply(mod, fun, [conn, opts | args]) |> decode(decoder)
     end
 
     def parse(conn, _type, _subtype, _headers, _opts) do
