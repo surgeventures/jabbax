@@ -3,4 +3,6 @@ defmodule Jabbax.Document.Link do
 
   defstruct href: nil,
             meta: %{}
+
+  @type t :: %__MODULE__{}
 end
