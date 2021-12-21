@@ -8,6 +8,8 @@ defmodule Jabbax.Document.Resource do
             links: %{},
             meta: %{}
 
+  @type t :: %__MODULE__{}
+
   def from_map(map = %{id: id, type: type}) do
     %__MODULE__{
       id: id,

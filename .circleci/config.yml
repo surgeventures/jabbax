@@ -9,7 +9,7 @@ workflows:
     jobs:
       - elixir-orb/test
       - elixir-orb/static-check:
-          dialyzer: false
+          dialyzer: true
           context: Hex
       - hold-for-dev-publish:
           type: approval

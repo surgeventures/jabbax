@@ -8,6 +8,8 @@ defmodule Jabbax.Document do
             links: %{},
             jsonapi: %{version: "1.0"}
 
+  @type t :: %__MODULE__{}
+
   defmacro __using__(_) do
     quote do
       alias Jabbax.Document
