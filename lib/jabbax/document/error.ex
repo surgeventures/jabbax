@@ -9,4 +9,6 @@ defmodule Jabbax.Document.Error do
             detail: nil,
             meta: %{},
             links: %{}
+
+  @type t :: %__MODULE__{}
 end
