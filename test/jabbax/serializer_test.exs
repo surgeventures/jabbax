@@ -204,6 +204,33 @@ defmodule Jabbax.SerializerTest do
            }
   end
 
+  defmodule Decimal do
+    defstruct [:value]
+  end
+
+  test "passing struct attributes unchanged" do
+    assert Serializer.call(%Document{
+             data: %Resource{
+               type: "employees",
+               id: 1,
+               attributes: %{
+                 age: %Decimal{value: 30}
+               }
+             }
+           }) == %{
+             data: %{
+               type: "employees",
+               id: "1",
+               attributes: %{
+                 "age" => %Decimal{value: 30}
+               }
+             },
+             jsonapi: %{
+               version: "1.0"
+             }
+           }
+  end
+
   test "empty data" do
     assert Serializer.call(%Document{data: nil}) == %{
              data: nil,

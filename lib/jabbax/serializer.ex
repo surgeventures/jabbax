@@ -232,7 +232,11 @@ defmodule Jabbax.Serializer do
     {serialize_key(name), serialize_value(value)}
   end
 
-  defp serialize_value(key_values_map = %{}), do: serialize_key_values(key_values_map)
+  defp serialize_value(value) when is_struct(value), do: value
+
+  defp serialize_value(key_values_map) when is_map(key_values_map) do
+    serialize_key_values(key_values_map)
+  end
 
   defp serialize_value(value_list) when is_list(value_list) do
     Enum.map(value_list, &serialize_value/1)
