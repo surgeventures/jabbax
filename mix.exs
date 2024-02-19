@@ -4,8 +4,8 @@ defmodule Jabbax.Mixfile do
   def project do
     [
       app: :jabbax,
-      version: "1.0.2",
-      elixir: "~> 1.4",
+      version: "1.0.3",
+      elixir: "~> 1.14",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -33,16 +33,16 @@ defmodule Jabbax.Mixfile do
   end
 
   def application do
-    [extra_applications: [:logger], env: [json_encoder: Poison, json_decoder: Poison]]
+    [extra_applications: [:logger], env: [json_encoder: Jason, json_decoder: Jason]]
   end
 
   defp deps do
     [
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:plug, "~> 1.12", optional: true},
-      {:poison, "~> 3.0", optional: true}
+      {:jason, "~> 1.0", optional: true}
     ]
   end
 end
