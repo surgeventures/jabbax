@@ -54,9 +54,7 @@ defmodule Jabbax.Deserializer do
 
   defp deserialize_relationships(relationship_map)
        when is_map(relationship_map) or is_list(relationship_map) do
-    relationship_map
-    |> Enum.map(&deserialize_relationship_pair/1)
-    |> Enum.into(%{})
+    Map.new(relationship_map, &deserialize_relationship_pair/1)
   end
 
   defp deserialize_relationships(relationship),
@@ -107,9 +105,7 @@ defmodule Jabbax.Deserializer do
   defp dig_and_deserialize_links(_), do: %{}
 
   defp deserialize_links(link_map) do
-    link_map
-    |> Enum.map(&deserialize_link_pair/1)
-    |> Enum.into(%{})
+    Map.new(link_map, &deserialize_link_pair/1)
   end
 
   defp deserialize_link_pair({name, link}) do
@@ -195,9 +191,7 @@ defmodule Jabbax.Deserializer do
   defp deserialize_key_values(nil), do: %{}
 
   defp deserialize_key_values(key_values_map = %{}) do
-    key_values_map
-    |> Enum.map(&deserialize_key_value_pair/1)
-    |> Enum.into(%{})
+    Map.new(key_values_map, &deserialize_key_value_pair/1)
   end
 
   defp deserialize_key_value_pair({name, value}) do

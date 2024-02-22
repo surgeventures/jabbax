@@ -73,9 +73,7 @@ defmodule Jabbax.Serializer do
   defp serialize_relationships(relationship_map) when relationship_map == %{}, do: nil
 
   defp serialize_relationships(relationship_map = %{}) do
-    relationship_map
-    |> Enum.map(&serialize_relationship_pair/1)
-    |> Enum.into(%{})
+    Map.new(relationship_map, &serialize_relationship_pair/1)
   end
 
   defp serialize_relationships(arg) do
@@ -113,9 +111,7 @@ defmodule Jabbax.Serializer do
   defp serialize_links(link_map) when link_map == %{}, do: nil
 
   defp serialize_links(link_map = %{}) do
-    link_map
-    |> Enum.map(&serialize_link_pair/1)
-    |> Enum.into(%{})
+    Map.new(link_map, &serialize_link_pair/1)
   end
 
   defp serialize_links(arg) do
@@ -219,9 +215,7 @@ defmodule Jabbax.Serializer do
   defp serialize_key_values(key_values_map) when key_values_map == %{}, do: nil
 
   defp serialize_key_values(key_values_map = %{}) do
-    key_values_map
-    |> Enum.map(&serialize_key_value_pair/1)
-    |> Enum.into(%{})
+    Map.new(key_values_map, &serialize_key_value_pair/1)
   end
 
   defp serialize_key_values(arg) do
@@ -247,8 +241,7 @@ defmodule Jabbax.Serializer do
   defp struct_to_map_with_present_keys(struct = %{}) do
     struct
     |> Map.from_struct()
-    |> Enum.filter(fn {_, value} -> value != nil end)
-    |> Enum.into(%{})
+    |> Map.filter(fn {_, value} -> value != nil end)
   end
 
   defp put_empty_data(doc = %{data: _}), do: doc
