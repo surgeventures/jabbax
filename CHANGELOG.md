@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2024-02-19
+### Fixed
+- Upgrade dependencies to get rid of warnings with newer elixir. elixir 1.14 is the lowest supported version in mix.exs.
+
 ## [1.0.2] - 2022-02-14
 ### Fixed
 - Arguments with struct values are now passed through Jabbax instead of raising an error [@vtm9](https://github.com/vtm9).
@@ -35,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/surgeventures/jabbax/compare/v1.0.2...HEAD
 
+[1.0.3]: https://github.com/surgeventures/jabbax/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/surgeventures/jabbax/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/surgeventures/jabbax/compare/v1.0.0...v1.0.1
 [1.0.1]: https://github.com/surgeventures/jabbax/compare/v0.2.1...v1.0.0

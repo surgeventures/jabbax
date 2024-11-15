@@ -10,6 +10,6 @@ defmodule JabbaxTest do
 
   test "encode!" do
     assert Jabbax.encode!(%Document{}) ==
-             ~s({"jsonapi":{"version":"1.0"},"data":null})
+             ~s({"data":null,"jsonapi":{"version":"1.0"}})
   end
 end

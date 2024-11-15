@@ -3,24 +3,26 @@ defmodule Jabbax.ParserTest do
   use Plug.Test
   use Jabbax.Document
 
-  @sample_json %{
-    "data" => %{
-      "id" => "1",
-      "type" => "user",
-      "attributes" => %{
-        "name" => "Sample User"
+  @sample_json """
+  {
+    "data": {
+      "id": "1",
+      "type": "user",
+      "attributes": {
+        "name": "Sample User"
       }
     },
-    "jsonapi" => %{
-      "version" => "1.0"
+    "jsonapi": {
+      "version": "1.0"
     }
   }
+  """
 
   def parse(conn, opts \\ []) do
     opts =
       opts
       |> Keyword.put_new(:parsers, [Jabbax.Parser])
-      |> Keyword.put_new(:json_decoder, Poison)
+      |> Keyword.put_new(:json_decoder, Jason)
 
     Plug.Parsers.call(conn, Plug.Parsers.init(opts))
   end
@@ -28,17 +30,25 @@ defmodule Jabbax.ParserTest do
   test "JSON API document" do
     connection =
       :post
-      |> conn("/", Poison.encode!(@sample_json))
+      |> conn("/", @sample_json)
       |> put_req_header("content-type", "application/vnd.api+json")
       |> parse()
 
-    assert connection.body_params == @sample_json
+    assert connection.body_params ==
+             %{
+               "data" => %{
+                 "attributes" => %{"name" => "Sample User"},
+                 "id" => "1",
+                 "type" => "user"
+               },
+               "jsonapi" => %{"version" => "1.0"}
+             }
   end
 
   test "plain JSON content type without JSON parser" do
     connection =
       :post
-      |> conn("/", Poison.encode!(@sample_json))
+      |> conn("/", @sample_json)
       |> put_req_header("content-type", "application/json")
 
     assert_raise(Plug.Parsers.UnsupportedMediaTypeError, fn ->
@@ -49,7 +59,7 @@ defmodule Jabbax.ParserTest do
   test "no content type" do
     connection =
       :post
-      |> conn("/", Poison.encode!(@sample_json))
+      |> conn("/", @sample_json)
       |> parse()
 
     assert connection.body_params == %{}
@@ -75,7 +85,7 @@ defmodule Jabbax.ParserTest do
   test "custom body_reader" do
     connection =
       :post
-      |> conn("/", Poison.encode!(@sample_json))
+      |> conn("/", @sample_json)
       |> put_req_header("content-type", "application/vnd.api+json")
       |> parse(body_reader: {BodyReader, :read_body, []})
 

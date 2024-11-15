@@ -197,8 +197,8 @@ Here's an example Jabbax config that you could add to your `config.exs`, along w
 
 ```elixir
 config :jabbax,
-  json_encoder: Poison,
-  json_decoder: Poison
+  json_encoder: Jason,
+  json_decoder: Jason
 ```
 
 ## License
