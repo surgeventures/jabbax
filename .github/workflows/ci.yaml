@@ -6,7 +6,7 @@ env:
   ELIXIR_VERSION: 1.10.4 # Elixir version used during package publishing
   JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
   OTP_VERSION: 22.3.4.7 # OTP version used during package publishing
-  RELEVANT_FILES: "benchmark config examples interop lib priv src test mix.exs mix.lock" # Important, this controls the caching, make sure to keep this right
+  RELEVANT_FILES: "config lib test mix.exs mix.lock" # Important, this controls the caching, make sure to keep this right
   REPOSITORY: jabbax
   RUNNER_OS: ubuntu20 # Must match Elixir/OTP version in described in action erlef/setup-beam@v1
   SHA: ${{ github.sha }}
@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        otp: [21.3.8.24, 22.3.4.7]
+        otp: [22.3.4.7]
         elixir: [1.10.4]
         runner-os: [ubuntu20]
     steps:
@@ -103,7 +103,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        otp: [21.3.8.24, 22.3.4.7]
+        otp: [22.3.4.7]
         elixir: [1.10.4]
         runner-os: [ubuntu20]
     steps:
@@ -248,23 +248,6 @@ jobs:
           echo "Publishing package"
           mix hex.publish --yes
 
-
-  interop-tests:
-    runs-on: runs-on,runner=2cpu-linux-x64
-    name: Interop tests
-    container:
-      image: elixir:1.10-slim
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install Dependencies
-      run: |
-        mix local.rebar --force
-        mix local.hex --force
-        mix deps.get
-      working-directory: ./interop
-    - name: Run interop tests
-      run: mix run script/run.exs
-      working-directory: ./interop
 
   check_release:
     runs-on: runs-on,runner=2cpu-linux-x64
