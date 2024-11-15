@@ -33,7 +33,7 @@ defmodule Jabbax.Mixfile do
   end
 
   def application do
-    [extra_applications: [:logger], env: [json_encoder: Poison, json_decoder: Poison]]
+    [extra_applications: [:logger, :plug], env: [json_encoder: Poison, json_decoder: Poison]]
   end
 
   defp deps do
