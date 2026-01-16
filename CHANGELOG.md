@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-01-16
+### Changed
+- **Breaking**: Minimum Elixir version is now 1.15 (previously 1.4)
+- Updated dependencies: credo ~> 1.7, ex_doc ~> 0.30, dialyxir ~> 1.4, plug ~> 1.14
+- Broadened poison version support: ~> 3.0 or ~> 4.0 or ~> 5.0 or ~> 6.0
+
+### Added
+- Optional `jason ~> 1.0` dependency as alternative JSON encoder/decoder
+
+### Fixed
+- Deprecated `use Mix.Config` replaced with `import Config`
+- Deprecated `use Plug.Test` replaced with imports in tests
+
+### Removed
+- CircleCI configuration (migrated to GitHub Actions)
+- Dev publish workflow
+
 ## [1.0.2] - 2022-02-14
 ### Fixed
 - Arguments with struct values are now passed through Jabbax instead of raising an error [@vtm9](https://github.com/vtm9).
@@ -33,8 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/surgeventures/jabbax/compare/v1.0.2...HEAD
-
+[Unreleased]: https://github.com/surgeventures/jabbax/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/surgeventures/jabbax/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/surgeventures/jabbax/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/surgeventures/jabbax/compare/v1.0.0...v1.0.1
 [1.0.1]: https://github.com/surgeventures/jabbax/compare/v0.2.1...v1.0.0
