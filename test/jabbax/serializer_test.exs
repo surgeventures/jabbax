@@ -306,4 +306,67 @@ defmodule Jabbax.SerializerTest do
              }
            }
   end
+
+  describe "error status normalization for 422" do
+    # Phoenix 1.6 renamed HTTP 422 from "Unprocessable Entity" to "Unprocessable Content" (RFC 9110).
+    # 35+ repos across the org depend on "unprocessable-entity" string, so we hardcode it.
+
+    test "normalizes unprocessable-entity string" do
+      assert %{errors: [%{status: "unprocessable-entity"}]} =
+               Serializer.call(%Document{errors: [%Error{status: "unprocessable-entity"}]})
+    end
+
+    test "normalizes unprocessable_entity string" do
+      assert %{errors: [%{status: "unprocessable-entity"}]} =
+               Serializer.call(%Document{errors: [%Error{status: "unprocessable_entity"}]})
+    end
+
+    test "normalizes Unprocessable-Entity string (case insensitive)" do
+      assert %{errors: [%{status: "unprocessable-entity"}]} =
+               Serializer.call(%Document{errors: [%Error{status: "Unprocessable-Entity"}]})
+    end
+
+    test "normalizes unprocessable-content string (Phoenix 1.6+)" do
+      assert %{errors: [%{status: "unprocessable-entity"}]} =
+               Serializer.call(%Document{errors: [%Error{status: "unprocessable-content"}]})
+    end
+
+    test "normalizes unprocessable_content string (Phoenix 1.6+)" do
+      assert %{errors: [%{status: "unprocessable-entity"}]} =
+               Serializer.call(%Document{errors: [%Error{status: "unprocessable_content"}]})
+    end
+
+    test "normalizes Unprocessable_Content string (case insensitive)" do
+      assert %{errors: [%{status: "unprocessable-entity"}]} =
+               Serializer.call(%Document{errors: [%Error{status: "Unprocessable_Content"}]})
+    end
+
+    test "normalizes :unprocessable_entity atom" do
+      assert %{errors: [%{status: "unprocessable-entity"}]} =
+               Serializer.call(%Document{errors: [%Error{status: :unprocessable_entity}]})
+    end
+
+    test "normalizes :unprocessable_content atom (Phoenix 1.6+)" do
+      assert %{errors: [%{status: "unprocessable-entity"}]} =
+               Serializer.call(%Document{errors: [%Error{status: :unprocessable_content}]})
+    end
+
+    test "preserves other status strings unchanged" do
+      assert %{errors: [%{status: "not-found"}]} =
+               Serializer.call(%Document{errors: [%Error{status: "not-found"}]})
+
+      assert %{errors: [%{status: "internal_server_error"}]} =
+               Serializer.call(%Document{errors: [%Error{status: "internal_server_error"}]})
+    end
+
+    test "converts integer status to string" do
+      assert %{errors: [%{status: "422"}]} =
+               Serializer.call(%Document{errors: [%Error{status: 422}]})
+    end
+
+    test "handles nil status" do
+      result = Serializer.call(%Document{errors: [%Error{code: "some-error"}]})
+      refute Map.has_key?(hd(result.errors), :status)
+    end
+  end
 end

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-01-16
+### Added
+- Error status normalization: all 422 variations (`unprocessable_entity`, `unprocessable-entity`, `unprocessable_content`, `unprocessable-content`) now serialize to `"unprocessable-entity"` for backward compatibility with Phoenix 1.6+ (RFC 9110 rename)
+
 ## [1.1.0] - 2025-01-16
 ### Changed
 - **Breaking**: Minimum Elixir version is now 1.15 (previously 1.4)
@@ -50,7 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-[Unreleased]: https://github.com/surgeventures/jabbax/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/surgeventures/jabbax/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/surgeventures/jabbax/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/surgeventures/jabbax/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/surgeventures/jabbax/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/surgeventures/jabbax/compare/v1.0.0...v1.0.1
