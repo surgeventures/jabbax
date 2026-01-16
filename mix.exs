@@ -1,11 +1,11 @@
-defmodule Jabbax.Mixfile do
+defmodule Jabbax.MixProject do
   use Mix.Project
 
   def project do
     [
       app: :jabbax,
-      version: "1.0.2",
-      elixir: "~> 1.4",
+      version: "1.1.0",
+      elixir: "~> 1.15",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -38,11 +38,12 @@ defmodule Jabbax.Mixfile do
 
   defp deps do
     [
-      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:plug, "~> 1.12", optional: true},
-      {:poison, "~> 3.0", optional: true}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.30", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:plug, "~> 1.14", optional: true},
+      {:poison, "~> 3.0 or ~> 4.0 or ~> 5.0 or ~> 6.0", optional: true},
+      {:jason, "~> 1.0", optional: true}
     ]
   end
 end

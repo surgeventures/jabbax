@@ -1,6 +1,7 @@
 defmodule Jabbax.ParserTest do
   use ExUnit.Case
-  use Plug.Test
+  import Plug.Test
+  import Plug.Conn
   use Jabbax.Document
 
   @sample_json %{
