@@ -164,10 +164,33 @@ defmodule Jabbax.Serializer do
     error
     |> dig_and_serialize_meta
     |> dig_and_serialize_key(:code)
+    |> dig_and_serialize_status
     |> dig_and_serialize_error_source
     |> dig_and_serialize_links
     |> struct_to_map_with_present_keys
   end
+
+  defp dig_and_serialize_status(parent = %{}), do: Map.update!(parent, :status, &serialize_status/1)
+
+  defp serialize_status(nil), do: nil
+
+  # Phoenix 1.6 renamed HTTP 422 from "Unprocessable Entity" to "Unprocessable Content" (RFC 9110).
+  # 35+ repos across the org depend on "unprocessable-entity" string, so we hardcode it.
+  # Note: 422 uses hyphen format for historical reasons, other codes use underscore.
+  defp serialize_status(status) when is_atom(status),
+    do: status |> Atom.to_string() |> serialize_status()
+
+  defp serialize_status(status) when is_binary(status) do
+    normalized = status |> String.downcase() |> String.replace(["-", "_"], "")
+
+    case normalized do
+      "unprocessableentity" -> "unprocessable-entity"
+      "unprocessablecontent" -> "unprocessable-entity"
+      _ -> status
+    end
+  end
+
+  defp serialize_status(status) when is_integer(status), do: Integer.to_string(status)
 
   defp dig_and_serialize_error_source(parent = %{}) do
     Map.update!(parent, :source, &serialize_error_source/1)
