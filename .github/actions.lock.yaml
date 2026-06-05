@@ -1,5 +1,5 @@
 version: 1
-generated_at: 2026-06-01T09:21:37Z
+generated_at: 2026-05-25T15:30:53Z
 internal: []
 trusted:
   - action: actions/cache
@@ -21,9 +21,9 @@ trusted:
 external:
   - action: erlef/setup-beam
     refs:
-      - fc68ffb90438ef2936bbb3251622353b3dcb2f93
+      - v1
     occurrences:
-      fc68ffb90438ef2936bbb3251622353b3dcb2f93:
+      v1:
         .github/workflows/ci.yaml:
           - jobs.test.steps.[1].uses
           - jobs.publish.steps.[1].uses
